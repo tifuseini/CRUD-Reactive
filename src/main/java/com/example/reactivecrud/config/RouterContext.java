@@ -1,2 +1,4 @@
-package com.example.reactivecrud.config;public class RouterContext {
+package com.example.reactivecrud.config;
+
+public class RouterContext {
 }
