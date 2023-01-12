@@ -1,2 +1,7 @@
 server:
   port: 9090
+
+spring:
+  data:
+  datasource:
+    url: mongodb://localhost:27017/test
