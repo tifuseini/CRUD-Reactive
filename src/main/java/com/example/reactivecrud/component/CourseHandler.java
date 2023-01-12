@@ -59,4 +59,27 @@ public class CourseHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
 
     }
+
+    public Mono<ServerResponse> deleteCourse(ServerRequest request) {
+        var id = request.pathVariable("id");
+        var course = courseService.getCourseById(id);
+        return course.flatMap(c -> ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(courseService.deleteCourse(id), Void.class))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> deleteAllCourses(ServerRequest request) {
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(courseService.deleteAllCourses(), Void.class);
+    }
+
+    public Mono<ServerResponse> findCoursesByCategory(ServerRequest request) {
+        var name = request.pathVariable("name");
+        var courses = courseService.getCoursesByCategory(name);
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(courses, Course.class);
+    }
 }
