@@ -21,4 +21,21 @@ public class CourseHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(courses, Course.class);
     }
+
+    public Mono<ServerResponse> findCourseById(ServerRequest request) {
+        var id = request.pathVariable("id");
+        var course = courseService.getCourseById(id);
+        return course.flatMap(c -> ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(c))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> createCourse(ServerRequest request) {
+        var course = request.bodyToMono(Course.class);
+
+        return course.flatMap(c -> ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(courseService.saveCourse(c), Course.class));
+    }
 }
