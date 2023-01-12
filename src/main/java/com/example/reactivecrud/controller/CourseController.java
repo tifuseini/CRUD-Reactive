@@ -24,14 +24,14 @@ public class CourseController {
     }
 
     @GetMapping("{id}")
-    public Mono<ResponseEntity<Course>> getCourseById(String id) {
+    public Mono<ResponseEntity<Course>> getCourseById(@PathVariable String id) {
         return courseService.getCourseById(id)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @GetMapping("category/{name}")
-    public Flux<Course> getCoursesByCategory(String name) {
+    public Flux<Course> getCoursesByCategory(@PathVariable String name) {
         return courseService.getCoursesByCategory(name)
                 .doOnError(throwable ->
                         log.error("Error occurred while getting courses by category: {}", name, throwable));
@@ -45,7 +45,7 @@ public class CourseController {
     }
 
     @PutMapping("{id}")
-    public Mono<ResponseEntity<Course>> updateCourse(String id, Course course) {
+    public Mono<ResponseEntity<Course>> updateCourse(@PathVariable String id,@RequestBody Course course) {
         return courseService.updateCourse(id, course)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build())
@@ -54,7 +54,7 @@ public class CourseController {
     }
 
     @DeleteMapping("{id}")
-    public Mono<ResponseEntity<Void>> deleteCourse(String id) {
+    public Mono<ResponseEntity<Void>> deleteCourse(@PathVariable String id) {
         return courseService.deleteCourse(id)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build())
