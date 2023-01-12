@@ -38,4 +38,25 @@ public class CourseHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(courseService.saveCourse(c), Course.class));
     }
+
+    public Mono<ServerResponse> updateCourse(ServerRequest request) {
+        var id = request.pathVariable("id");
+        var course = request.bodyToMono(Course.class);
+        var existingCourse = courseService.getCourseById(id);
+
+       return course.zipWith(
+                existingCourse,
+                (c, existing) -> Course.builder()
+                        .id(existing.getId())
+                        .name(c.getName())
+                        .category(c.getCategory())
+                        .rating(c.getRating())
+                        .description(c.getDescription())
+                        .build())
+                .flatMap(c -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(courseService.updateCourse(id, c), Course.class))
+                .switchIfEmpty(ServerResponse.notFound().build());
+
+    }
 }
